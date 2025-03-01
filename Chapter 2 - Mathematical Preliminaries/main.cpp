@@ -144,7 +144,7 @@ vector<vector<Complex>> matrixMultiply(vector<vector<Complex>> matrix1, vector<v
             }        
         }
     }
-
+  
     return product;
 }
 
@@ -158,12 +158,57 @@ vector<vector<Complex>> matrixTranspose(vector<vector<Complex>> matrix){
 
     for (int i = 0; i < rows; i++){
         for (int j = 0; j < cols; j++){
-              transpose[j][i] = matrix[i][j];
+             transpose[j][i] = matrix[i][j];
         }
     }
 
     return transpose;
 }
+
+// Programming Exercise 2.1.20(i) Write a function that accepts a complex matrix and returns its conjugate.
+
+vector<vector<Complex>> matrixConj(vector<vector<Complex>> matrix){
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+
+    vector<vector<Complex>> conj(rows, vector<Complex>(cols,Complex(0,0)));
+
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            conj[i][j] = complexConjugate(matrix[i][j]);
+        }
+    }
+
+    return conj;
+}
+
+// Programming Exercise 2.1.20(ii) Write a function that accepts a complex matrix and returns the dagger of that matrix.
+
+vector<vector<Complex>> matrixDagger(vector<vector<Complex>> matrix){
+    return matrixConj(matrixTranspose(matrix));
+}
+
+// Programming Exercise 2.1.20(iii) Write a function that accepts a complex matrix and returns the trace of the matrix.
+
+Complex matrixTrace(vector<vector<Complex>> matrix){
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+
+    if (rows != cols){
+        cout << "Error: Trace is undefined." << endl;
+        return {};
+    }
+
+    Complex trace;
+
+    for (int i = 0; i < matrix.size(); i++){
+        trace = trace + matrix[i][i];
+    }
+
+    return trace;
+    
+}
+
 
 int main(){
 
