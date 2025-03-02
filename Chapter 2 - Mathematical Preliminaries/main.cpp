@@ -49,6 +49,13 @@ class Complex {
             res.imag = ((c.real * imag) - (c.imag * real))/(pow(c.real,2) + pow(c.imag,2));
             return res;
         }
+
+        Complex operator/(double d){
+            Complex res;
+            res.real = real / d;
+            res.imag = imag / d;
+            return res;
+        }
 };
 
 // Programming Exercise 2.1.12(i) Write a function that accepts a complex number and returns its complex conjugate
@@ -207,6 +214,77 @@ Complex matrixTrace(vector<vector<Complex>> matrix){
 
     return trace;
     
+}
+
+// Programming Exercise 2.2.18(i) Write a function that accepts a vector and returns the norm of the vector
+
+double vectorNorm(vector<Complex> vec){
+    
+    Complex norm(0,0);    
+    
+    for (int i = 0; i < vec.size(); i++){
+        norm = norm + (vec[i] * complexConjugate(vec[i]));
+    }
+
+    return sqrt(norm.getReal());
+
+}
+
+
+// Programming Exercise 2.2.18(ii) Write a function that accepts a vector and returns the normalized form of the vector
+vector<Complex> vectorNormalized(vector<Complex> vec){
+    
+    double norm = vectorNorm(vec);
+    vector<Complex> vec_normalized(vec.size(),Complex(0,0));  
+    
+    for (int i = 0; i < vec.size(); i++){
+        vec_normalized[i] = vec[i] / norm;
+    }
+
+    return vec_normalized;
+
+}
+
+// Programming Exercise 2.2.18(iii) Write three functions which accept a basis (a string or set of column vectors). The three functions should determine if the basis is normal, orthogonal, and orthonormal, respectively.
+
+bool isNormal(vector<vector<Complex>> basis){
+
+    for (int i = 0; i < basis.size(); i++){
+        if (vectorNorm(basis[i]) != 1)
+            return false;
+    }
+
+    return true;
+}
+
+double innerProduct(vector<Complex> vec1, vector<Complex> vec2){
+
+    if (vec1.size() != vec2.size()){
+        cout << "Effor: Sizes incompatible for inner product." << endl;
+        return {};
+    }
+
+    Complex sum(0,0);
+    for (int i = 0; i < vec1.size(); i++){
+        sum = sum + (vec1[i] * vec2[i]);
+    }
+    return sqrt(sum.getReal());    
+}
+
+bool isOrthogonal(vector<vector<Complex>> basis){
+
+    for (int i = 0; i < basis.size(); i++){
+        for (int j = 0; j < basis.size(); j++){   
+            if (i != j && innerProduct(basis[i],basis[j]) != 0)
+                return false;
+        }
+    }
+
+    return true;
+}
+
+bool isOrthonormal(vector<vector<Complex>> basis){
+    return isNormal(basis) && isOrthogonal(basis);
 }
 
 
