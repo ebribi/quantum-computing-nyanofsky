@@ -58,7 +58,59 @@ class Complex {
             res.imag = imag / d;
             return res;
         }
+
+        bool operator==(Complex const& c){
+            if (real == c.real && imag == c.imag)
+                return true;
+            else
+                return false;
+        }
+
+        bool operator!=(Complex const& c){
+            if (real != c.real || imag != c.imag)
+                return true;
+            else
+                return false;
+        }
 };
+
+bool operator==(vector<vector<Complex>> m1, vector<vector<Complex>> m2){
+    int rows1 = m1.size();
+    int cols1 = m1[0].size();
+    int rows2 = m2.size();
+    int cols2 = m2[0].size();
+
+    if (rows1 != rows2 && cols1 != cols2)
+        return false;
+
+    for (int i = 0; i < rows1; i++){
+        for (int j = 0; j < cols1; j++){
+            if (m1[i][j] != m2[i][j])
+                return false;        
+        }
+    }
+
+    return true;
+}
+
+bool operator!=(vector<vector<Complex>> m1, vector<vector<Complex>> m2){
+    int rows1 = m1.size();
+    int cols1 = m1[0].size();
+    int rows2 = m2.size();
+    int cols2 = m2[0].size();
+
+    if (rows1 != rows2 && cols1 != cols2)
+        return true;
+
+    for (int i = 0; i < rows1; i++){
+        for (int j = 0; j < cols1; j++){
+            if (m1[i][j] != m2[i][j])
+                return true;        
+        }
+    }
+
+    return false;
+}
 
 // Programming Exercise 2.1.12(i) Write a function that accepts a complex number and returns its complex conjugate
 
@@ -249,7 +301,7 @@ vector<Complex> vectorNormalized(vector<Complex> vec){
 
 // Programming Exercise 2.2.18(iii) Write three functions which accept a basis (a string or set of column vectors). The three functions should determine if the basis is normal, orthogonal, and orthonormal, respectively.
 
-bool isNormal(vector<vector<Complex>> basis){
+bool isBasisNormal(vector<vector<Complex>> basis){
 
     for (int i = 0; i < basis.size(); i++){
         if (vectorNorm(basis[i]) != 1)
@@ -273,7 +325,7 @@ double innerProduct(vector<Complex> vec1, vector<Complex> vec2){
     return sqrt(sum.getReal());    
 }
 
-bool isOrthogonal(vector<vector<Complex>> basis){
+bool isBasisOrthogonal(vector<vector<Complex>> basis){
 
     for (int i = 0; i < basis.size(); i++){
         for (int j = 0; j < basis.size(); j++){   
@@ -285,7 +337,71 @@ bool isOrthogonal(vector<vector<Complex>> basis){
     return true;
 }
 
-bool isOrthonormal(vector<vector<Complex>> basis){
-    return isNormal(basis) && isOrthogonal(basis);
+bool isBasisOrthonormal(vector<vector<Complex>> basis){
+    return isBasisNormal(basis) && isBasisOrthogonal(basis);
 }
 
+// Programming Exercise 2.3.5(i) Write a function that accepts any two matrices (one or two dimensional) and determines if the two matrices are equal. You might call it isEqual.
+
+bool isEqual(vector<Complex> matrix1, vector<Complex> matrix2){
+
+    if (matrix1.size() != matrix2.size())
+        return false;
+    
+    for (int i = 0; i < matrix1.size(); i++){
+        if (matrix1[i] != matrix2[i])
+            return false;
+    }
+
+    return true;
+}
+
+bool isEqual(vector<vector<Complex>> matrix1, vector<vector<Complex>> matrix2){
+
+    int rows1 = matrix1.size();
+    int cols1 = matrix1[0].size();
+    int rows2 = matrix2.size();
+    int cols2 = matrix2[0].size();
+
+    if (rows1 != rows2 && cols1 != cols2)
+        return false;
+    
+    for (int i = 0; i < rows1; i++){
+        for (int j = 0; j < cols1; j++){
+            if (matrix1[i][j] != matrix2[i][j])
+                return false;
+        }
+    }
+
+    return true;
+}
+
+// Programming Exercise 2.3.5(ii) Write four functions where each function accepts a matrix. The four functions should determine if the matrix is symmetric, orthogonal, Hermitian, and unitary. You might call the function that determines if a matrix is unitary isUnitary.
+
+bool isSymmetric(vector<vector<Complex>> matrix){
+    if (matrix.size() != matrix[0].size())
+        return false;
+
+    return (matrix == matrixTranspose(matrix));
+}
+
+bool isOrthogonal(vector<vector<Complex>> matrix){
+
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+
+    if (rows != cols)
+        return false;
+
+
+    vector<vector<Complex>> identityMatrix(rows, vector<Complex>(cols,Complex(0,0)));
+
+    for (int i = 0; i < matrix.size(); i++){
+        for (int j = 0; j < matrix[0].size(); j++){
+            if (i == j)
+                identityMatrix[i][j] = Complex(1,0);
+        }
+    }
+
+    return (matrixMultiply(matrix,matrixTranspose(matrix)) == identityMatrix); 
+}
