@@ -393,8 +393,8 @@ bool isOrthogonal(vector<vector<Complex>> matrix){
     if (rows != cols)
         return false;
 
-
     vector<vector<Complex>> identityMatrix(rows, vector<Complex>(cols,Complex(0,0)));
+
 
     for (int i = 0; i < matrix.size(); i++){
         for (int j = 0; j < matrix[0].size(); j++){
@@ -404,4 +404,33 @@ bool isOrthogonal(vector<vector<Complex>> matrix){
     }
 
     return (matrixMultiply(matrix,matrixTranspose(matrix)) == identityMatrix); 
+}
+
+bool isHermitian(vector<vector<Complex>> matrix){
+
+    if (matrix.size() != matrix[0].size())
+        return false;
+
+    return (matrix == matrixDagger(matrix));
+}
+
+bool isUnitary(vector<vector<Complex>> matrix){
+
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+
+    if (rows != cols)
+        return false;
+
+    vector<vector<Complex>> identityMatrix(rows, vector<Complex>(cols,Complex(0,0)));
+
+
+    for (int i = 0; i < matrix.size(); i++){
+        for (int j = 0; j < matrix[0].size(); j++){
+            if (i == j)
+                identityMatrix[i][j] = Complex(1,0);
+        }
+    }
+
+    return (matrixMultiply(matrix,matrixDagger(matrix)) == identityMatrix); 
 }
