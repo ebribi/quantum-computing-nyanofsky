@@ -74,6 +74,19 @@ class Complex {
         }
 };
 
+bool operator==(vector<Complex> v1, vector<Complex> v2){
+
+    if (v1.size() != v2.size())
+        return false;
+
+    for (int i = 0; i < v1.size(); i++){
+        if (v1[i] != v2[i])
+            return false;
+    }
+
+    return true;
+}
+
 bool operator==(vector<vector<Complex>> m1, vector<vector<Complex>> m2){
     int rows1 = m1.size();
     int cols1 = m1[0].size();
@@ -433,4 +446,91 @@ bool isUnitary(vector<vector<Complex>> matrix){
     }
 
     return (matrixMultiply(matrix,matrixDagger(matrix)) == identityMatrix); 
+}
+
+vector<Complex> vectorScalar(vector<Complex> vec, Complex scalar){
+
+    vector<Complex> product(vec.size(),Complex(0,0));
+
+    for (int i = 0; i < vec.size(); i++){
+        product[i] = product[i] + (vec[i] * scalar);
+    }
+
+    return product;
+}
+
+vector<Complex> matrixMultiply(vector<vector<Complex>> matrix, vector<Complex> vec){
+    int rows1 = matrix.size();
+    int cols1 = matrix[0].size();
+    int rows2 = vec.size();
+
+    if (cols1 != rows2){
+        cout << "Error: Incompatible matrix dimensions for multiplication." << endl;
+        return {};    
+    }
+
+    vector<Complex> product(rows1, Complex(0,0));
+    
+    for (int i = 0; i < rows1; i++){
+        for (int j = 0; j < cols1; j++){
+                product[i] = product[i] + (matrix[i][j] * vec[j]);                 
+        }
+    }
+  
+    return product;
+}
+
+// Programming Exercise 2.3.10 Write a function that accepts a complex matrix, a complex vector, and a complex number. The function should determine if the number and the vector is the eigenvalue and the eigenvector of the matrix.
+
+
+bool isEigen(vector<vector<Complex>> matrix, vector<Complex> vec, Complex val){
+
+    return (matrixMultiply(matrix,vec) == vectorScalar(vec,val));
+}
+
+// Programming Exercise 2.4.7 WWrite a function which accepts two matrices (1-dimensional or 2-dimensional) and returns the tensor product of the two matrices.
+
+vector<Complex> tensorProduct(vector<Complex> vec1, vector<Complex> vec2){
+
+    int vec1_rows = vec1.size();
+    int vec2_rows = vec2.size();
+
+    vector<Complex> result(vec1_rows * vec2_rows, Complex(0,0));
+
+    int result_row = 0;
+    for (int i = 0; i < vec1_rows; i++){
+        for (int j = 0; j < vec2_rows; j++){
+            result[result_row] = result[result_row] + (vec1[i] * vec2[j]);
+            result_row++;
+        }
+    }
+
+    return result;
+}
+
+vector<vector<Complex>> tensorProduct(vector<vector<Complex>> matrix1, vector<vector<Complex>> matrix2){
+
+    int matrix1_rows = matrix1.size();
+    int matrix1_cols = matrix1[0].size();
+    int matrix2_rows = matrix2.size();
+    int matrix2_cols = matrix2[0].size();
+
+    vector<vector<Complex>> result(matrix1_rows * matrix2_rows, vector<Complex>(matrix1_cols * matrix2_cols,Complex(0,0)));
+
+    for (int i = 0; i < matrix1_rows; i++){
+
+        for (int k = 0; k < matrix1_cols; k++){
+            
+            for (int j = 0; j < matrix2_rows; j++){
+
+                for (int l = 0; l < matrix2_cols; l++){
+
+                    result[i * matrix2_rows + k][j * matrix2_cols + l] = result[i * matrix2_rows + k][k * matrix2_cols + l] + (matrix1[i][j] * matrix2[k][l]);
+                }
+            }
+        }
+    }
+
+    return result;
+    
 }
